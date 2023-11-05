@@ -100,5 +100,7 @@ ENV/
 # izone ignore
 *.env
 web/
+nginx/ssl_cert/
+db/mysql/
 
 
