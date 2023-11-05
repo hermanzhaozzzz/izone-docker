@@ -35,11 +35,11 @@ services:
       IZONE_REDIS_PORT: 6379
     env_file:
       - ./izone.env
+    command: gunicorn izone.wsgi -b 0.0.0.0:8000
     volumes:
       - ./web/static:/opt/cloud/izone/static
       - ./web/media:/opt/cloud/izone/media
       - ./web/whoosh_index:/opt/cloud/izone/whoosh_index
-      - ./web/log:/opt/cloud/izone/log
     links:
       - db
       - redis
@@ -55,11 +55,14 @@ services:
     image: ${NGINX_IMAGE}
     container_name: izone_nginx
     volumes:
+      - ./web/static:/opt/izone/static:ro
+      - ./web/media:/opt/izone/media:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./web/static:/usr/share/nginx/izone/static
-      - ./web/media:/usr/share/nginx/izone/media
+      - ./nginx/ssl_cert:/etc/nginx/ssl_cert:ro
+      - ./nginx/log:/var/log/nginx
     ports:
-      - "${NGINX_PORT}:80"
+      - "80:80"
+      - "443:443"
     links:
       - web
     networks:
